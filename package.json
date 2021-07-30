@@ -1,0 +1,30 @@
+{
+    "name": "roverify",
+    "version": "1.0.0",
+    "description": "Node.js module that fetches Roblox user data from a Discord user",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MoaufmKlo/roverify.git"
+    },
+    "keywords": [
+        "roblox",
+        "verify",
+        "bloxlink",
+        "rover",
+        "link"
+    ],
+    "author": {
+        "email": "hey@moaufmklo.com",
+        "name": "MoaufmKlo",
+        "url": "https://moaufmklo.com"
+    },
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/MoaufmKlo/roverify/issues"
+    },
+    "homepage": "https://github.com/MoaufmKlo/roverify#readme"
+}
