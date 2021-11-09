@@ -9,7 +9,7 @@
 - [Table of contents](#table-of-contents)
 - [About](#about)
 - [Installation](#installation)
-- [Usage](#example-usage)
+- [Usage](#usage)
 - [Links](#links)
 - [Contributing](#contributing)
 
@@ -45,7 +45,7 @@ roverify.verify("113691352327389188")
 
 The `robloxUser` object returned consists of the following:
 
-```json
+```javascript
 {
     "description": "Welcome to the Roblox profile! This is where you can check out the newest items in the catalog, and get a jumpstart on exploring and building on our Imagination Platform. If you want news on updates to the Roblox platform, or great new experiences to play with friends, check out blog.roblox.com. Please note, this is an automated account. If you need to reach Roblox for any customer service needs find help at www.roblox.com/help",
     "created": "2006-02-27T21:06:40.3Z",
