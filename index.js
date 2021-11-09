@@ -55,6 +55,7 @@ module.exports = {
                     if (bloxlink.status === "ok") {
                         fetchRoblox(bloxlink.primaryAccount)
                             .then((user) => {
+                                user.verificationService = "bloxlink";
                                 promiseRes(user);
                             })
                             .catch((err) => {
@@ -74,8 +75,9 @@ module.exports = {
                                     const rover = JSON.parse(data);
 
                                     if (rover.status === "ok") {
-                                        fetchRoblox(rover.primaryAccount)
+                                        fetchRoblox(rover.robloxId)
                                             .then((user) => {
+                                                user.verificationService = "rover";
                                                 promiseRes(user);
                                             })
                                             .catch((err) => {

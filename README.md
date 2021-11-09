@@ -53,7 +53,8 @@ The `robloxUser` object returned consists of the following:
     "externalAppDisplayName": null,
     "id": 1,
     "name": "Roblox",
-    "displayName": "Roblox"
+    "displayName": "Roblox",
+    "verificationService": "bloxlink"
 }
 ```
 
