@@ -43,6 +43,28 @@ roverify.verify("113691352327389188")
     });
 ```
 
+## Example within Command (Assuming you're using slash commands)
+
+```javascript
+const roverify = require("roverify");
+var userId = <Interaction>.user.id
+roverify.verify(userId)    
+    .then((robloxUser) => {
+        <Interaction>.setNickname(robloxUser.name)
+        <Interaction>.editReply(`Successfully Verified, **${robloxUser.name}!**`)
+        // Assuming you're bot has permissions.
+    })
+    .catch((err) => {
+        if (err === "Discord user id (argument 0) is not verified") {
+            <Interaction>.editReply(`Hey! You're not verified. Try verifying through rover here!\n\nhttp://rover.link/verify`)
+        } else {
+            throw err;
+        }
+    });
+```
+
+ 
+
 The `robloxUser` object returned consists of the following:
 
 ```javascript
