@@ -4,15 +4,14 @@ const { token } = require('./config.json');
 const roverify = require("roverify");
 
 // Create a new client instance
-const client = new Client({ intents: 513 });
-// Intents Calc: https://ziad87.net/intents/
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGES.GUILD _MESSAGES] });
 
 // When the client is ready, run this code (only once)
-client.once('ready', () => {
-	console.log('Ready!');
+client.once("ready", () => {
+	console.log("Ready");
 });
 
-client.on('messageCreate', async(msg) => {
+client.on("messageCreate", msg => {
   if(msg.content == "verify") {
     var userId = msg.user.id
     roverify.verify(userId)    
@@ -23,7 +22,7 @@ client.on('messageCreate', async(msg) => {
       })
       .catch((err) => {
           if (err === "Discord user id (argument 0) is not verified") {
-              msg>.editReply(`Hey! You're not verified. Try verifying through rover here!\n\nhttp://rover.link/verify`)
+              msg.editReply(`Hey! You're not verified. Try verifying through rover here!\n\nhttp://rover.link/verify`)
           } else {
               throw err;
           }
