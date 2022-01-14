@@ -4,7 +4,7 @@
     "description": "Node.js module that fetches Roblox user data from a Discord user",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest"
     },
     "repository": {
         "type": "git",
@@ -26,5 +26,11 @@
     "bugs": {
         "url": "https://github.com/MoaufmKlo/roverify/issues"
     },
-    "homepage": "https://github.com/MoaufmKlo/roverify#readme"
+    "homepage": "https://github.com/MoaufmKlo/roverify#readme",
+    "devDependencies": {
+        "jest": "^27.4.7"
+    },
+    "jest": {
+        "testMatch": ["**/tests/**/*.[jt]s?(x)"]
+    }
 }
