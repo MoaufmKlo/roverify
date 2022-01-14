@@ -1,9 +1,21 @@
 const https = require("https");
 
 /**
+ * @typedef {Object} RobloxUser
+ * @property {String} description User description
+ * @property {Date} created When the account was created
+ * @property {Boolean} banned Whether user is banned
+ * @property {String} [externalAppDisplayName] External app display name of the uesr
+ * @property {Number} id User id
+ * @property {String} name Username
+ * @property {String} displayName Cosmetic display name, falls back to name
+ * @property {("bloxlink" | "rover")} verificationService From which service the verification comes
+ */
+
+/**
  * Fetch Roblox user data from a Roblox user id.
  * @param {string} robloxId Roblox user id
- * @returns {Promise.<Object>} Roblox user data
+ * @returns {Promise<RobloxUser>} Roblox user data
  */
 function fetchRoblox(robloxId) {
     return new Promise((promiseRes, promiseRej) => {
@@ -18,7 +30,10 @@ function fetchRoblox(robloxId) {
 
             res.on("end", () => {
                 if (res.statusCode === 200) {
-                    promiseRes(JSON.parse(data));
+                    const json = JSON.parse(data);
+                    json.created = new Date(json.created);
+
+                    promiseRes(json);
                 } else if (res.statusCode === 404) {
                     promiseRej("Roblox user id (argument 0) is invalid");
                 } else {
@@ -32,10 +47,11 @@ function fetchRoblox(robloxId) {
 }
 
 module.exports = {
+
     /**
-     * Fetch Roblox user data from a Discord user.
-     * @param {string} discordId Discord user id (snowflake)
-     * @returns {Promise.<Object>} Roblox user data
+     * Get a Discord user's Roblox account.
+     * @param {String} discordId Discord user id
+     * @returns {Promise<RobloxUser>} Roblox user data
      */
     "verify": (discordId) => {
         return new Promise((promiseRes, promiseRej) => {
@@ -108,4 +124,5 @@ module.exports = {
             });
         });
     }
+
 };
