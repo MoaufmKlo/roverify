@@ -8,3 +8,9 @@ test("Verify an existing Discord user", () => {
         }))
     });
 });
+
+test("Verify a nonexistent Discord user", () => {
+    roverify.verify("0").catch((err) => {
+        expect(err).toEqual("Discord user id (argument 0) is not verified");
+    });
+});

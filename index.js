@@ -5,7 +5,7 @@ const https = require("https");
  * @property {String} description User description
  * @property {Date} created When the account was created
  * @property {Boolean} banned Whether user is banned
- * @property {String} [externalAppDisplayName] External app display name of the uesr
+ * @property {String} [externalAppDisplayName] External app display name of the user
  * @property {Number} id User id
  * @property {String} name Username
  * @property {String} displayName Cosmetic display name, falls back to name
