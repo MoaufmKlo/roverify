@@ -1,0 +1,8 @@
+# GitHub (Actions)
+.github/
+
+# Tests
+tests/
+
+# README
+README.md
