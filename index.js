@@ -13,35 +13,44 @@ const https = require("https");
  */
 
 /**
+ * GET a resource.
+ * @param {String} url
+ * @returns {Promise<Response, Object>} Request response object
+ */
+function get(url) {
+    return new Promise((res, rej) => https.get(url, (req) => {
+        let data = "";
+        req.on("data", (chunk) => data += chunk);
+
+        req.on("end", () => {
+            req.json = JSON.parse(data);
+            res(req);
+        });
+    }));
+}
+
+/**
  * Fetch Roblox user data from a Roblox user id.
  * @param {string} robloxId Roblox user id
- * @returns {Promise<RobloxUser>} Roblox user data
+ * @returns {Promise<RobloxUser>} Roblox user object
  */
 function fetchRoblox(robloxId) {
-    return new Promise((promiseRes, promiseRej) => {
-        if (!robloxId) promiseRej("Roblox user id (argument 0) missing or null");
+    return new Promise((res, rej) => {
+        if (!robloxId) rej("Roblox user id (argument 0) missing or null");
 
-        https.get(`https://users.roblox.com/v1/users/${robloxId}`, (res) => {
-            var data = "";
-
-            res.on("data", (chunk) => {
-                data += chunk;
-            });
-
-            res.on("end", () => {
-                if (res.statusCode === 200) {
-                    const json = JSON.parse(data);
-                    json.created = new Date(json.created);
-
-                    promiseRes(json);
-                } else if (res.statusCode === 404) {
-                    promiseRej("Roblox user id (argument 0) is invalid");
-                } else {
-                    promiseRej(`${res.statusMessage} (${res.statusCode})`);
-                }
-            });
-        }).on("error", (err) => {
-            promiseRej(err.message);
+        get(`https://users.roblox.com/v1/users/${robloxId}`).then((req) => {
+            if (req.statusCode === 200) {
+                req.json.created = new Date(req.json.created);
+                res(req.json);
+            } else {
+                rej(`${req.statusMessage} (${req.statusCode})`);
+            }
+        }).catch((err) => {
+            if (req.statusCode === 404) {
+                rej("Roblox user id (argument 0) is invalid");
+            } else {
+                rej(`${err.statusMessage} (${err.statusCode})`);
+            }
         });
     });
 }
@@ -51,76 +60,60 @@ module.exports = {
     /**
      * Get a Discord user's Roblox account.
      * @param {String} discordId Discord user id
-     * @returns {Promise<RobloxUser>} Roblox user data
+     * @returns {Promise<RobloxUser>} Roblox user object
      */
     "verify": (discordId) => {
-        return new Promise((promiseRes, promiseRej) => {
-            if (!discordId) promiseRej("Discord user id (argument 0) missing or null");
+        return new Promise((res, rej) => {
+            if (!discordId) rej("Discord user id (argument 0) missing or null");
 
             // Attempt 1: Bloxlink
-            https.get(`https://api.blox.link/v1/user/${discordId}`, (res) => {
-                var data = "";
+            get(`https://api.blox.link/v1/user/${discordId}`).then((req) => {
+                const bloxlink = req.json;
 
-                res.on("data", (chunk) => {
-                    data += chunk;
-                });
+                if (bloxlink.status === "ok") {
+                    fetchRoblox(bloxlink.primaryAccount)
+                        .then((user) => {
+                            user.verificationService = "bloxlink";
+                            res(user);
+                        })
+                        .catch((err) => {
+                            rej(err);
+                        });
+                } else if (bloxlink.status === "error") {
+                    if (bloxlink.error === "This user is not linked with Bloxlink.") {
+                        // Attempt 2: RoVer
+                        get(`https://verify.eryn.io/api/user/${discordId}`).then((req) => {
+                            const rover = req.json;
 
-                res.on("end", () => {
-                    const bloxlink = JSON.parse(data);
-
-                    if (bloxlink.status === "ok") {
-                        fetchRoblox(bloxlink.primaryAccount)
-                            .then((user) => {
-                                user.verificationService = "bloxlink";
-                                promiseRes(user);
-                            })
-                            .catch((err) => {
-                                promiseRej(err);
-                            });
-                    } else if (bloxlink.status === "error") {
-                        if (bloxlink.error === "This user is not linked with Bloxlink.") {
-                            // Attempt 2: RoVer
-                            https.get(`https://verify.eryn.io/api/user/${discordId}`, (res) => {
-                                var data = "";
-
-                                res.on("data", (chunk) => {
-                                    data += chunk;
-                                });
-
-                                res.on("end", () => {
-                                    const rover = JSON.parse(data);
-
-                                    if (rover.status === "ok") {
-                                        fetchRoblox(rover.robloxId)
-                                            .then((user) => {
-                                                user.verificationService = "rover";
-                                                promiseRes(user);
-                                            })
-                                            .catch((err) => {
-                                                promiseRej(err);
-                                            });
-                                    } else if (rover.status === "error") {
-                                        if (rover.error === "User not found.") {
-                                            promiseRej("Discord user id (argument 0) is not verified");
-                                        } else {
-                                            promiseRej(rover.error);
-                                        }
-                                    } else {
-                                        promiseRej(rover.status);
-                                    }
-                                });
-                            }).on("error", (err) => {
-                                promiseRej(err.message);
-                            });
-                        } else {
-                            promiseRej(bloxlink.error);
-                        }
+                            if (rover.status === "ok") {
+                                fetchRoblox(rover.robloxId)
+                                    .then((user) => {
+                                        user.verificationService = "rover";
+                                        res(user);
+                                    })
+                                    .catch((err) => {
+                                        rej(`${err.statusMessage} (${err.statusCode})`);
+                                    });
+                            } else if (rover.status === "error") {
+                                if (rover.error === "User not found.") {
+                                    rej("Discord user id (argument 0) is not verified");
+                                } else {
+                                    rej(rover.error);
+                                }
+                            } else {
+                                rej(rover.status);
+                            }
+                        }).catch((err) => {
+                            rej(`${err.statusMessage} (${err.statusCode})`);
+                        });;
                     } else {
-                        promiseRej(bloxlink.status);
+                        rej(bloxlink.error);
                     }
-                });
-            }).on("error", (err) => {
-                promiseRej(err.message);
+                } else {
+                    rej(bloxlink.status);
+                }
+            }).catch((err) => {
+                rej(`${err.statusMessage} (${err.statusCode})`);
             });
         });
     }
