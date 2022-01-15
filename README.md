@@ -2,6 +2,7 @@
     <h1>roverify</h1>
     <img alt="npm Version" src="https://img.shields.io/npm/v/roverify?style=for-the-badge">
     <img alt="npm Downloads" src="https://img.shields.io/npm/dw/roverify?style=for-the-badge">
+    <img alt="Checks" src="https://img.shields.io/github/checks-status/moaufmklo/roverify/main?style=for-the-badge">
     <br>
 </div>
 
