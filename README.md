@@ -1,3 +1,5 @@
+This package has been deprecated. RoVer and Bloxlink are no longer supported without API keys.
+
 <div align='center'>
   <h1>roverify</h1>
   <img alt='npm Version' src='https://img.shields.io/npm/v/roverify?style=for-the-badge'>
